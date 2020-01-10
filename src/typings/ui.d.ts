@@ -91,4 +91,11 @@ declare namespace BaseUI {
         onBack?: () => void
         onClick?: () => void
     }
+
+    export interface Confirm {
+        text: string
+        cancelBtnText: string
+        confirmBtnText: string
+        onConfirm: () => void
+    }
 }

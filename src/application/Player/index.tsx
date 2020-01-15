@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import * as actionTypes from './store/actionCreators';
 import { useSelector, useDispatch } from 'react-redux';
 import MiniPlayer from './miniPlayer';
@@ -7,6 +7,8 @@ import PlayList from "./playList";
 import { getSongUrl, isEmptyObject, findIndex, shuffle } from "../../api/utils";
 import Toast, { ToastHanles } from "./../../baseUI/toast/index";
 import { playMode } from '../../api/config';
+import { getLyricRequest } from '../../api/request';
+import Lyric from "../../api/lyric-parser";
 
 function Player() {
     // 目前播放时间
@@ -17,7 +19,9 @@ function Player() {
     let percent = isNaN(currentTime / duration) ? 0 : currentTime / duration;
     // 当前播放歌曲
     const [preSong, setPreSong] = useState({});
+    // 播放模式
     const [modeText, setModeText] = useState("");
+    const currentLyric = useRef<Lyric>(null);
     const toastRef = useRef<ToastHanles>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
     const fullScreen = useSelector((state: any) => state.getIn(['player', 'fullScreen']))
@@ -35,6 +39,48 @@ function Player() {
     const currentSongJS = currentSong.toJS()
     const playListJS = playList.toJS()
     const sequencePlayListJS = sequencePlayList.toJS()
+
+    // 即时歌词
+    const [currentPlayingLyric, setPlayingLyric] = useState("");
+    // 记录当前行数
+    const currentLineNum = useRef(0);
+
+    const getLyric = useCallback((id: number) => {
+        const audioDom = audioRef.current;
+        if (!audioDom) {
+            return
+        }
+        let lyric = "";
+        if (currentLyric.current) {
+            currentLyric.current.stop();
+        }
+        // 避免 songReady 恒为 false 的情况
+        getLyricRequest(id)
+            .then((data: any) => {
+                lyric = data.lrc.lyric;
+                if (!lyric) {
+                    // @ts-ignore
+                    currentLyric.current = null;
+                    return;
+                }
+                // @ts-ignore
+                currentLyric.current = new Lyric(lyric, handleLyric);
+                currentLyric.current.play();
+                currentLineNum.current = 0;
+                currentLyric.current.seek(0);
+            })
+            .catch(() => {
+                songReady.current = true;
+                audioDom.play();
+            });
+    }, [])
+
+    const handleLyric = ({ lineNum, txt }: { lineNum: number, txt: string }) => {
+        if (!currentLyric.current) return;
+        currentLineNum.current = lineNum;
+        console.log(lineNum, txt)
+        setPlayingLyric(txt);
+    };
 
     useEffect(() => {
         const audioDom = audioRef.current;
@@ -59,7 +105,7 @@ function Player() {
         getLyric(current.id)
         setCurrentTime(0);// 从头开始播放
         setDuration((current.dt / 1000) | 0);// 时长
-    }, [currentIndex, dispatch, playListJS, preSong]);
+    }, [currentIndex, dispatch, getLyric, playListJS, preSong]);
 
     useEffect(() => {
         const audioDom = audioRef.current;
@@ -69,9 +115,6 @@ function Player() {
         playing ? audioDom.play() : audioDom.pause();
     }, [dispatch, playing]);
 
-    const getLyric = (id: any) => {
-
-    }
     const onToggleFullScreen = (data: any) => {
         dispatch(actionTypes.changeFullScreen(data));
     }
@@ -79,15 +122,21 @@ function Player() {
     const onTogglePlaying = (e: React.MouseEvent, state: boolean) => {
         e.stopPropagation();
         dispatch(actionTypes.changePlayingState(state))
+        // 歌曲暂停 / 播放
+        if (currentLyric.current) {
+            currentLyric.current.togglePlay(currentTime * 1000);
+        }
     }
 
     const onTogglePlayList = (state: any) => {
         dispatch(actionTypes.changeShowPlayList(state))
     }
-    //@ts-ignore
-    const onUpdateTime = e => {
-        setCurrentTime(e.target.currentTime);
+
+    const onUpdateTime = (e: React.SyntheticEvent<HTMLMediaElement, Event>) => {
+        setCurrentTime(e.currentTarget.currentTime);
     };
+
+
     const onProgressChange = (curPercent: number) => {
         const audioDom = audioRef.current;
         if (!audioDom) {
@@ -98,6 +147,10 @@ function Player() {
         audioDom.currentTime = newTime;
         if (!playing) {
             dispatch(actionTypes.changePlayingState(true));// 播放状态
+        }
+        // 歌曲进度更新:
+        if (currentLyric.current) {
+            currentLyric.current.seek(newTime * 1000);
         }
     };
 
@@ -200,6 +253,9 @@ function Player() {
                     playing={playing}
                     duration={duration}// 总时长
                     currentTime={currentTime}// 播放时间
+                    currentLyric={currentLyric.current}
+                    currentPlayingLyric={currentPlayingLyric}
+                    currentLineNum={currentLineNum.current}
                     percent={percent}
                     togglePlaying={onTogglePlaying}
                     toggleFullScreen={onToggleFullScreen}

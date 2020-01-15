@@ -1,4 +1,15 @@
 declare namespace BaseUI {
+    export interface SearchBox {
+        /**
+         * 从父组件热门搜索中拿到的新关键词
+         */
+        newQuery: string
+        /**
+         * 父组件针对搜索关键字发请求相关的处理
+         */
+        onQuery: (value: string) => void
+        back: () => void
+    }
     /**
      * 打造巨好用的项目灵魂组件 ——Scroll 组件
      */

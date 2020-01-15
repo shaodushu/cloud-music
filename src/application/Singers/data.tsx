@@ -6,7 +6,7 @@
  * 其实也是为了拓展一下大家的思路，全局的状态管理不仅仅可以用 redux，react hooks 同样可以模拟出这种功能。现在我们就用 hooks 中的 useContext 结合 useReducer 打造出类似 redux 的状态管理功能。
  */
 
-import React, { createContext, useReducer } from 'react';
+import React, { createContext, useReducer, FC } from 'react';
 import { fromJS } from 'immutable';
 
 //context
@@ -29,7 +29,7 @@ const reducer = (state: { set: (arg0: string, arg1: any) => any; }, action: { ty
 };
 
 //Provider 组件
-export const Data = (props: any) => {
+export const Data: FC = (props) => {
     //useReducer 的第二个参数中传入初始值
     const [data, customDispatch] = useReducer(reducer, fromJS({
         category: '',

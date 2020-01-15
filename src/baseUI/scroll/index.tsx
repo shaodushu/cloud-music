@@ -11,7 +11,7 @@ import { debounce } from "../../api/utils";
 
 export interface ScrollHanles {
     refresh(): void
-    getBScroll(): void
+    getBScroll(): CloudMusic.BScroll | undefined
 }
 /**
  * better-scroll 的 (横向) 滚动原理，首先外面容器要宽度固定，其次内容宽度要大于容器宽度
@@ -150,7 +150,7 @@ Scroll.defaultProps = {
 };
 
 //TODO userMemo 与 memo 区别
-// userMeno 针对 一段函数逻辑是否重复执行
+// useMemo 针对一段函数逻辑是否重复执行
 // useMemo是在渲染期间完成的
 // useEffect是在渲染之后完成的
 // memo类似于PureCompoent 作用是优化组件性能，防止组件触发重渲染

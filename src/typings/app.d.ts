@@ -75,6 +75,15 @@ declare namespace CloudMusic {
          * random: 2.
          */
         mode: 0 | 1 | 2
+        currentLyric: any | null
+        /**
+         * 即时歌词
+         */
+        currentPlayingLyric: string
+        /**
+         * 当前行数
+         */
+        currentLineNum: number
         /**
          * 上一首
          */
@@ -175,12 +184,21 @@ declare namespace CloudMusic {
          */
         refresh(): void
         /**
-         * 
+         * 滚动到指定的位置
          * @param {Number} x 横轴坐标（单位 px）
          * @param {Number} y 纵轴坐标（单位 px）
          * @param {Number} time 滚动动画执行的时长（单位 ms）
          * @param {Object} easing 缓动函数，一般不建议修改，如果想修改，参考源码中的 ease.js 里的写法
          */
         scrollTo(x: number, y: number, time?: number, easing?): void
+        /**
+         * 滚动到指定的目标元素
+         * @param {DOM | String} el el 滚动到的目标元素, 如果是字符串，则内部会尝试调用 querySelector 转换成 DOM 对象
+         * @param {Number} time time 滚动动画执行的时长（单位 ms）
+         * @param {Number | Boolean} offsetX offsetX 相对于目标元素的横轴偏移量，如果设置为 true，则滚到目标元素的中心位置
+         * @param {Number | Boolean} offsetY 相对于目标元素的纵轴偏移量，如果设置为 true，则滚到目标元素的中心位置
+         * @param {Object} easing 缓动函数，一般不建议修改，如果想修改，参考源码中的 ease.js 里的写法
+         */
+        scrollToElement(el, time, offsetX?, offsetY?, easing?): void
     }
 }

@@ -6,6 +6,7 @@ import { reducer as albumReducer } from '../application/Album/store/index';
 import { reducer as singerInfoReducer } from "../application/Singer/store/index";
 import { reducer as playerReducer } from "../application/Player/store/index";
 import { reducer as searchReducer } from "../application/Search/store/index";
+import { reducer as appReducer } from "./app/index";
 
 export default combineReducers({
     // 之后开发具体功能模块的时候添加 reducer
@@ -16,4 +17,5 @@ export default combineReducers({
     singerInfo: singerInfoReducer,
     player: playerReducer,
     search: searchReducer,
+    app: appReducer
 });

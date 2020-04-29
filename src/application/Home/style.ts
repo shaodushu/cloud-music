@@ -22,6 +22,8 @@ export const Tab = styled.div`
   flex-direction: row;
   justify-content: space-around;
   background: ${style["theme-color"]};
+  margin: -1px;
+  padding: 1px;
   a {
     flex: 1;
     padding: 2px 0;

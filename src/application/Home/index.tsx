@@ -8,7 +8,7 @@ function Home(props: { route: any; }) {
     const { route } = props
     const history = useHistory()
     return (
-        <div>
+        <>
             <Top>
                 <span className="iconfont menu">&#xe65c;</span>
                 <span className="title">WebApp</span>
@@ -21,7 +21,7 @@ function Home(props: { route: any; }) {
             </Tab>
             <Player></Player>
             {renderRoutes(route.routes)}
-        </div>
+        </>
     )
 }
 

@@ -42,6 +42,15 @@ const fadeIn = `
   }
 `
 
+export const Skin = {
+  a: {
+    themeColor: 'rgb(33, 33, 33)'
+  },
+  b: {
+    themeColor: '#fff'
+  }
+}
+
 export default {
   'theme-color': 'rgb(33, 33, 33)',
   'theme-color-shadow': 'rgba(217, 67, 52, .5)',

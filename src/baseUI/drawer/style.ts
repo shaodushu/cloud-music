@@ -21,15 +21,16 @@ export const DrawerWrapper = styled.div`
   }
   &.drawer-fade-exit-active {
     opacity: 0;
-    transition: all 0.3s;
+    transition: all 1.3s;
   }
   .drawer_wrapper {
     position: absolute;
     left: 0;
+    top:0;
     bottom: 0;
-    width: 100%;
+    width: 82%;
     opacity: 1;
-    border-radius: 10px 10px 0 0;
+    /* border-radius: 10px 10px 0 0; */
     background-color: ${style["highlight-background-color"]};
     transform: translate3d(0, 0, 0);
   }

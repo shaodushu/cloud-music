@@ -1,4 +1,4 @@
-import React, { forwardRef, useState, useEffect, useRef, useImperativeHandle, memo, useMemo } from "react"
+import React, { forwardRef, useState, useEffect, useRef, useImperativeHandle, memo, useMemo, useCallback } from "react"
 import BScroll from "better-scroll"
 import {
     ScrollContainer,
@@ -26,15 +26,18 @@ const Scroll = forwardRef<ScrollHanles, BaseUI.Scroll>((props, ref) => {
 
     const { pullUp, pullDown, onScroll } = props;
 
-    let pullUpDebounce = useMemo(() => {
-        return debounce(pullUp, 300)
-    }, [pullUp]);
+    // let pullUpDebounce = useMemo(() => {
+    //     return debounce(pullUp, 300)
+    // }, [pullUp]);
+    let pullUpDebounce = useCallback(debounce(pullUp, 300), [pullUp])
     // 千万注意，这里不能省略依赖，
     // 不然拿到的始终是第一次 pullUp 函数的引用，相应的闭包作用域变量都是第一次的，产生闭包陷阱。下同。
 
-    let pullDownDebounce = useMemo(() => {
-        return debounce(pullDown, 300)
-    }, [pullDown]);
+    // let pullDownDebounce = useMemo(() => {
+    //     return debounce(pullDown, 300)
+    // }, [pullDown]);
+
+    let pullDownDebounce = useCallback(debounce(pullDown, 300), [pullDown])
 
     useEffect(() => {
         if (!scrollContaninerRef.current) {
@@ -84,7 +87,6 @@ const Scroll = forwardRef<ScrollHanles, BaseUI.Scroll>((props, ref) => {
     }, [pullUp, bScroll, pullUpDebounce]);
 
     useEffect(() => {
-
         //进行下拉的判断，调用下拉刷新的函数
         if (!bScroll || !pullDown) return;
         bScroll.on('touchEnd', (pos: { y: number; }) => {

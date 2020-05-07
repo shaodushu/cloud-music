@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseUrl = "https://ubd39.sse.codesandbox.io/";
+export const baseUrl = "http://106.52.178.229:3000/";
 
 // axios.defaults.withCredentials = false
 axios.defaults.headers.post["Content-Type"] = "application/json";

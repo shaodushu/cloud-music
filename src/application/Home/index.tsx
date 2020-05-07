@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { renderRoutes } from 'react-router-config';
 import { Top, Tab, TabItem } from './style';
 import { NavLink, useHistory } from 'react-router-dom';// 利用 NavLink 组件进行路由跳转
@@ -7,6 +7,7 @@ import Drawer, { DrawerProps } from '../../baseUI/drawer'
 import { useSelector, useDispatch } from 'react-redux';
 import * as actionTypes from '../../store/app/actionCreators';
 import { Skin } from '../../assets/global-style'
+import { useSize } from '../../api/custom-hook'
 
 function Home(props: { route: any; }) {
     const { route } = props
@@ -19,7 +20,6 @@ function Home(props: { route: any; }) {
     }
 
     const themeJS = theme.toJS()
-    console.log('theme', themeJS)
     const dispatch = useDispatch()
 
     const handleToggleTheme = (color: string) => {
@@ -29,6 +29,17 @@ function Home(props: { route: any; }) {
             dispatch(actionTypes.changeTheme(Skin.b))
         }
 
+    }
+
+    const [size] = useSize()
+    const [isPC, setIsPC] = useState(false)
+
+    useEffect(() => {
+        setIsPC(!/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent))
+    }, [size])
+
+    if (isPC) {
+        return <div style={{ textAlign: "center", height: "100%", lineHeight: "100vh" }}>The PC did not fit</div>
     }
 
     return (

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseUrl = "http://106.52.178.229:3000/";
+export const baseUrl = "http://106.52.178.229/api/";
 
 // axios.defaults.withCredentials = false
 axios.defaults.headers.post["Content-Type"] = "application/json";
